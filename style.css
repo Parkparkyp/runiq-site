@@ -89,3 +89,16 @@ footer img{height:30px;width:auto;margin:0 auto 12px}
 .bgv .pk{margin:30px auto 0;max-width:520px}
 .bgv .go.full{display:block;max-width:520px;margin:10px auto 0;background:#fff;color:#111;border-color:#fff}
 @media(max-width:700px){header.top{padding:12px 20px}.in{padding:0 20px}.two{grid-template-columns:1fr;gap:0}.work{columns:1}.rv{grid-template-columns:1fr}.sec{padding-top:56px}nav{gap:16px}.hv{min-height:72vh}.row .v{white-space:normal;text-align:right}}
+
+/* 예약신청 버튼 — 가장 눈에 띄게 */
+.go.book,.hv .go.book,.bgv .go.book{background:#b0834f;color:#fff;border-color:#b0834f;font-size:17px;padding:18px 40px;box-shadow:0 6px 18px rgba(176,131,79,.35);letter-spacing:-.2px}
+.go.book:after{content:" →"}
+.bgv .go.book.full{display:block;max-width:520px;margin:14px auto 0}
+.hv .go.line{background:none;color:#fff;border-color:rgba(255,255,255,.7)}
+.kk{background:none;color:#191919;border:1px solid #d9d6cf;font-weight:600}
+.kk:before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:#fee500;margin-right:8px;vertical-align:1px}
+@media(max-width:700px){.btns .go.book{width:100%}}
+/* 버튼 크기 통일 (색만 다르게) */
+.btns .go,.btns .kk,.btns .go.book{font-size:16px;padding:17px 24px;min-width:240px;text-align:center;line-height:1.4}
+.kk{display:inline-block;text-align:center}
+@media(max-width:700px){.btns{flex-direction:column;align-items:center}.btns .go,.btns .kk,.btns .go.book{width:100%;max-width:360px}}

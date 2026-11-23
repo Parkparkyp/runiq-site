@@ -33,9 +33,16 @@
       e.classList.toggle('hide',empty);
     });
     var hv=document.getElementById('heroMedia');
-    if(hv&&!hv.firstChild){
-      if(safe(S.heroVideo)){var v=document.createElement('video');v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;v.setAttribute('playsinline','');v.setAttribute('muted','');if(safe(S.heroPoster))v.poster=S.heroPoster;v.src=S.heroVideo;hv.appendChild(v);var p=v.play&&v.play();if(p&&p.catch)p.catch(function(){});}
-      else if(safe(S.heroPoster)){var i=document.createElement('img');i.className='poster';i.alt='';i.src=S.heroPoster;hv.appendChild(i);}
+    if(hv){
+      var want=yid(S.heroYt)?'yt:'+S.heroYt:(safe(S.heroVideo)?'v:'+S.heroVideo:(safe(S.heroPoster)?'p:'+S.heroPoster:''));
+      if(hv.getAttribute('data-k')!==want){
+        hv.setAttribute('data-k',want);hv.innerHTML='';
+        if(yid(S.heroYt))heroYt(hv,S.heroYt);
+        else if(safe(S.heroVideo)){var v=document.createElement('video');v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;v.setAttribute('playsinline','');v.setAttribute('muted','');if(safe(S.heroPoster))v.poster=S.heroPoster;v.src=S.heroVideo;hv.appendChild(v);var p=v.play&&v.play();if(p&&p.catch)p.catch(function(){});}
+        else if(safe(S.heroPoster)){var i=document.createElement('img');i.className='poster';i.alt='';i.src=S.heroPoster;hv.appendChild(i);}
+      }
+      var sb=document.getElementById('soundBtn');
+      if(sb){sb.classList.toggle('hide',!yid(S.heroYt));sb.onclick=function(){lightbox(S.heroYt);};}
     }
     var hf=document.getElementById('heroFilm');
     if(hf){hf.innerHTML='';if(yid(S.heroYt))hf.appendChild(ytBox(S.heroYt));}
@@ -51,6 +58,49 @@
     var r=document.getElementById('reviewList');
     if(r){r.innerHTML='';(S.reviews||[]).forEach(function(u){if(!safe(u))return;var im=document.createElement('img');im.loading='lazy';im.alt='고객 후기';im.src=u;r.appendChild(im);});}
     var re=document.getElementById('reviewEmpty');if(re)re.classList.toggle('hide',!!(S.reviews||[]).length);
+  }
+  /* 대문 배경: 유튜브 영상을 소리 없이 반복 재생 (잘려 보여도 화면을 꽉 채워요).
+     자동 재생이 막히는 폰/절전 모드에서는 영상 대신 썸네일 사진이 그대로 보여요. */
+  function heroYt(box,id){
+    var wrap=document.createElement('div');wrap.className='ytbg';
+    var im=document.createElement('img');im.alt='';im.src='https://i.ytimg.com/vi/'+id+'/maxresdefault.jpg';
+    var fell=false;function fall(){if(fell)return;fell=true;im.src='https://i.ytimg.com/vi/'+id+'/hqdefault.jpg';}
+    im.onload=function(){if(im.naturalWidth&&im.naturalWidth<200)fall();};
+    im.onerror=fall;
+    wrap.appendChild(im);box.appendChild(wrap);
+    var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var sd=navigator.connection&&navigator.connection.saveData;
+    if(rm||sd)return;
+    function start(){
+      if(!wrap.isConnected)return;
+      var f=document.createElement('iframe');f.setAttribute('title','');f.setAttribute('tabindex','-1');f.setAttribute('aria-hidden','true');f.setAttribute('allow','autoplay; encrypted-media');
+      f.src='https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&mute=1&loop=1&playlist='+id+'&controls=0&modestbranding=1&playsinline=1&rel=0&disablekb=1&iv_load_policy=3&fs=0&enablejsapi=1';
+      function size(){var w=box.clientWidth,h=box.clientHeight,W=Math.max(w,h*16/9);f.style.width=W+'px';f.style.height=(W*9/16)+'px';}
+      size();window.addEventListener('resize',size);
+      var done=false;
+      function onMsg(ev){
+        if(ev.source!==f.contentWindow)return;
+        var d=ev.data;if(typeof d==='string'){try{d=JSON.parse(d);}catch(e){return;}}
+        if(!d)return;var st=d.event==='onStateChange'?d.info:(d.info&&d.info.playerState);
+        if(st===1&&!done){done=true;f.classList.add('on');}
+      }
+      window.addEventListener('message',onMsg);
+      f.addEventListener('load',function(){try{f.contentWindow.postMessage(JSON.stringify({event:'listening',id:1,channel:'widget'}),'*');}catch(e){}});
+      wrap.appendChild(f);
+      setTimeout(function(){if(!done){try{wrap.removeChild(f);}catch(e){}window.removeEventListener('message',onMsg);window.removeEventListener('resize',size);}},6000);
+    }
+    if(document.readyState==='complete')setTimeout(start,300);else window.addEventListener('load',function(){setTimeout(start,300);});
+  }
+  function lightbox(id){
+    if(!yid(id))return;var lb=document.createElement('div');lb.className='lb';
+    var bx=document.createElement('div');bx.className='box2';var f=document.createElement('iframe');
+    f.setAttribute('allow','autoplay; encrypted-media; picture-in-picture');f.setAttribute('allowfullscreen','');
+    f.src='https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0';
+    var x=document.createElement('button');x.type='button';x.textContent='닫기 ✕';
+    function close(){document.removeEventListener('keydown',kd);if(lb.parentNode)lb.parentNode.removeChild(lb);}
+    function kd(e){if(e.key==='Escape')close();}
+    x.onclick=close;lb.addEventListener('click',function(e){if(e.target===lb)close();});document.addEventListener('keydown',kd);
+    bx.appendChild(f);bx.appendChild(x);lb.appendChild(bx);document.body.appendChild(lb);
   }
   function ytBox(id){
     var y=document.createElement('div');y.className='yt';y.setAttribute('role','button');y.setAttribute('aria-label','영상 재생');

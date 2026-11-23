@@ -97,7 +97,7 @@
         if(ev.source!==f.contentWindow)return;
         var d=ev.data;if(typeof d==='string'){try{d=JSON.parse(d);}catch(e){return;}}
         if(!d)return;var st=d.event==='onStateChange'?d.info:(d.info&&d.info.playerState);
-        if(st===1&&!done){done=true;f.classList.add('on');}
+        if(st===1&&!done){done=true;setTimeout(function(){f.classList.add('on');},3500);}  /* 폰에서 처음 잠깐 뜨는 재생 버튼이 사라진 뒤에 보여줘요 */
       }
       window.addEventListener('message',onMsg);
       f.addEventListener('load',function(){try{f.contentWindow.postMessage(JSON.stringify({event:'listening',id:1,channel:'widget'}),'*');}catch(e){}});

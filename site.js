@@ -7,7 +7,7 @@ window.SITE = {
 
   /* 홈페이지 설정 서버 주소 (관리 페이지 admin.html 에서 고친 값을 읽어 와요)
      비우면 이 파일의 값만 써요. 서버가 느리거나 안 돼도 이 파일의 값으로 정상 표시돼요. */
-  api: '',
+  api: 'https://script.google.com/macros/s/AKfycbzWxLMOzulGS7SxULr0nF3ho9mUkfxoVoGzkWcrq4IKSEfyavO_D-iNLnuvU48xS711/exec',
 
   rep: '박희윤',
   biz: '637-12-03118',

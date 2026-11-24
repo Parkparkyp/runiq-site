@@ -20,7 +20,7 @@ window.SITE = {
   priceYt: '',      // 상품·가격 페이지 배경(인터뷰)
   work: [],         // 작업: {yt:'영상ID'} 또는 {img:'assets/w1.jpg'}
   reviews: [],      // 후기 캡처: ['assets/r1.jpg'] — 비어 있으면 "후기" 메뉴가 숨겨져요
-  heroVideo: '', heroPoster: '',
+  heroVideo: 'assets/hero.mp4', heroPoster: '',
   priceVideo: 'assets/price.mp4',  // 상품·가격 제목 칸 영상 (관리자에서 유튜브 링크를 넣으면 그게 우선)
 
   /* 대표 사진 (assets/owner.jpg 파일을 바꿔 올리면 교체돼요) */

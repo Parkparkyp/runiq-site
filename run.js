@@ -51,14 +51,16 @@
     });
     var hv=document.getElementById('heroMedia');
     if(hv){
-      var want=yid(S.heroYt)?'yt:'+S.heroYt:(safe(S.heroVideo)?'v:'+S.heroVideo:(safe(S.heroPoster)?'p:'+S.heroPoster:''));
+      var want=safe(S.heroVideo)?'v:'+S.heroVideo:(yid(S.heroYt)?'yt:'+S.heroYt:(safe(S.heroPoster)?'p:'+S.heroPoster:''));
+      if(hv.getAttribute('data-k')===null&&want==='v:'+S.heroVideo&&hv.querySelector('video'))hv.setAttribute('data-k',want);
       if(hv.getAttribute('data-k')!==want){
         hv.setAttribute('data-k',want);hv.innerHTML='';
-        if(yid(S.heroYt))heroYt(hv,S.heroYt);
-        else if(safe(S.heroVideo)){var v=document.createElement('video');v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;v.setAttribute('playsinline','');v.setAttribute('muted','');if(safe(S.heroPoster))v.poster=S.heroPoster;v.src=S.heroVideo;hv.appendChild(v);var p=v.play&&v.play();if(p&&p.catch)p.catch(function(){});}
+        if(safe(S.heroVideo)){var v=document.createElement('video');v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;v.setAttribute('playsinline','');v.setAttribute('muted','');if(safe(S.heroPoster))v.poster=S.heroPoster;v.src=S.heroVideo;hv.appendChild(v);var p=v.play&&v.play();if(p&&p.catch)p.catch(function(){});}
+        else if(yid(S.heroYt))heroYt(hv,S.heroYt);
         else if(safe(S.heroPoster)){var i=document.createElement('img');i.className='poster';i.alt='';i.src=S.heroPoster;hv.appendChild(i);}
       }
     }
+    if(hv){var rmq=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches,sdq=navigator.connection&&navigator.connection.saveData,hvv=hv.querySelector('video');if((rmq||sdq)&&hvv){hvv.pause();hvv.removeAttribute('src');try{hvv.load();}catch(e){}hvv.style.display='none';}}
     var pv=document.getElementById('priceMedia');
     if(pv){var pw=yid(S.priceYt)?'yt:'+S.priceYt:(safe(S.priceVideo)?'v:'+S.priceVideo:'');if(pv.getAttribute('data-k')===null&&pw==='v:'+S.priceVideo&&pv.querySelector('video'))pv.setAttribute('data-k',pw);if(pv.getAttribute('data-k')!==pw){pv.setAttribute('data-k',pw);pv.innerHTML='';if(yid(S.priceYt))heroYt(pv,S.priceYt);else if(safe(S.priceVideo)){var pvv=document.createElement('video');pvv.muted=true;pvv.loop=true;pvv.autoplay=true;pvv.playsInline=true;pvv.setAttribute('playsinline','');pvv.setAttribute('muted','');if(safe(S.pricePoster))pvv.poster=S.pricePoster;pvv.src=S.priceVideo;pv.appendChild(pvv);var pp=pvv.play&&pvv.play();if(pp&&pp.catch)pp.catch(function(){});}}}
     var w=document.getElementById('workList');

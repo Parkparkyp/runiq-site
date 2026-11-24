@@ -60,7 +60,7 @@
       }
     }
     var pv=document.getElementById('priceMedia');
-    if(pv){var pw=yid(S.priceYt)?'yt:'+S.priceYt:'';if(pv.getAttribute('data-k')!==pw){pv.setAttribute('data-k',pw);pv.innerHTML='';if(pw)heroYt(pv,S.priceYt);}}
+    if(pv){var pw=yid(S.priceYt)?'yt:'+S.priceYt:(safe(S.priceVideo)?'v:'+S.priceVideo:'');if(pv.getAttribute('data-k')===null&&pw==='v:'+S.priceVideo&&pv.querySelector('video'))pv.setAttribute('data-k',pw);if(pv.getAttribute('data-k')!==pw){pv.setAttribute('data-k',pw);pv.innerHTML='';if(yid(S.priceYt))heroYt(pv,S.priceYt);else if(safe(S.priceVideo)){var pvv=document.createElement('video');pvv.muted=true;pvv.loop=true;pvv.autoplay=true;pvv.playsInline=true;pvv.setAttribute('playsinline','');pvv.setAttribute('muted','');if(safe(S.pricePoster))pvv.poster=S.pricePoster;pvv.src=S.priceVideo;pv.appendChild(pvv);var pp=pvv.play&&pvv.play();if(pp&&pp.catch)pp.catch(function(){});}}}
     var w=document.getElementById('workList');
     if(w){
       w.innerHTML='';var items=S.work||[];
@@ -97,14 +97,14 @@
         if(ev.source!==f.contentWindow)return;
         var d=ev.data;if(typeof d==='string'){try{d=JSON.parse(d);}catch(e){return;}}
         if(!d)return;var st=d.event==='onStateChange'?d.info:(d.info&&d.info.playerState);
-        if(st===1&&!done){done=true;setTimeout(function(){f.classList.add('on');},3500);}  /* 폰에서 처음 잠깐 뜨는 재생 버튼이 사라진 뒤에 보여줘요 */
+        if(st===1&&!done){done=true;f.classList.add("on");}  /* 재생이 시작되면 바로 보여줘요 */
       }
       window.addEventListener('message',onMsg);
       f.addEventListener('load',function(){try{f.contentWindow.postMessage(JSON.stringify({event:'listening',id:1,channel:'widget'}),'*');}catch(e){}});
       wrap.appendChild(f);
       setTimeout(function(){if(!done){try{wrap.removeChild(f);}catch(e){}window.removeEventListener('message',onMsg);window.removeEventListener('resize',size);}},6000);
     }
-    if(document.readyState==='complete')setTimeout(start,300);else window.addEventListener('load',function(){setTimeout(start,300);});
+    if(document.readyState==='complete')setTimeout(start,0);else window.addEventListener('load',function(){setTimeout(start,0);});
   }
   function ytBox(id){
     var y=document.createElement('div');y.className='yt';y.setAttribute('role','button');y.setAttribute('aria-label','영상 재생');

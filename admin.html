@@ -12,7 +12,7 @@
 <style>
 :root{--bg:#f6f5f2;--tx:#161616;--mut:#7a7873;--ln:#d9d6cf}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--tx);font:16px/1.7 -apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;padding-bottom:90px}
+body{background:var(--bg);color:var(--tx);font:16px/1.7 -apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;padding-bottom:120px}
 .w{max-width:560px;margin:0 auto;padding:0 18px}
 h1{font-size:20px;padding:22px 0 4px}
 .sub{color:var(--mut);font-size:13px;margin-bottom:14px}
@@ -28,9 +28,27 @@ input:focus,textarea:focus{outline:0;border-color:var(--tx)}
 button{font:inherit;font-weight:700;border:1px solid var(--tx);background:var(--tx);color:#fff;padding:13px 18px;cursor:pointer;font-size:15px}
 button.line{background:none;color:var(--tx)}
 button:disabled{opacity:.5}
-.bar{position:fixed;left:0;right:0;bottom:0;background:#fffe;backdrop-filter:blur(8px);border-top:1px solid var(--ln);padding:10px 18px}
-.bar .in{max-width:560px;margin:0 auto;display:flex;gap:8px;align-items:center}
-.bar button{flex:1}
+.bar{position:fixed;left:0;right:0;bottom:0;background:#fffe;backdrop-filter:blur(8px);border-top:1px solid var(--ln);padding:10px 18px;z-index:9}
+.bar .in{max-width:560px;margin:0 auto;display:flex;gap:10px;align-items:center}
+.bar .stw{flex:1;min-width:0}
+.bar .stw .msg{padding:0;font-size:13px;line-height:1.5}
+.bar .dirty{font-size:13px;font-weight:700;color:#b45309}
+.bar button{flex:0 0 38%}
+.tabs{display:flex;position:sticky;top:0;z-index:8;background:var(--bg);border-bottom:1px solid var(--ln);margin:0 -18px 14px;padding:0 18px}
+.tabs button{flex:1;background:none;color:var(--mut);border:0;border-bottom:3px solid transparent;padding:12px 2px;font-size:14px}
+.tabs button.on{color:var(--tx);border-bottom-color:var(--tx)}
+.tab{display:none}.tab.on{display:block}
+details.c>summary{cursor:pointer;font-weight:700;font-size:14px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+details.c>summary::-webkit-details-marker{display:none}
+details.c>summary::after{content:'+';font-size:18px;color:var(--mut)}
+details.c[open]>summary::after{content:'\2212'}
+details.c[open]>summary{margin-bottom:10px}
+.pv{display:flex;flex-wrap:wrap;gap:6px 14px;margin:0 0 12px;font-size:13px}
+.pv a{color:inherit;text-decoration:none;border-bottom:1px solid var(--tx)}
+#defsum{white-space:pre-line}
+a.v{color:inherit;text-decoration:none}
+.gap{margin-top:10px}
+textarea.code{font:12px/1.5 ui-monospace,Menlo,monospace;min-height:180px;white-space:pre;overflow:auto}
 .msg{font-size:14px;font-weight:700;padding:10px 0;white-space:pre-wrap}
 .ok{color:#166534}.er{color:#b91c1c}
 .hide{display:none!important}
@@ -62,35 +80,73 @@ a.v{display:inline-block;margin-top:8px;font-size:14px;border-bottom:1px solid v
 </div>
 
 <div id="form" class="hide">
-  <div class="c"><h2>링크</h2>
-    <label>카카오톡 채널 채팅 주소</label><input id="l_kakao" inputmode="url" placeholder="https://pf.kakao.com/_xxxxx/chat">
-    <label>인스타그램</label><input id="l_instagram" inputmode="url" placeholder="https://www.instagram.com/아이디">
-    <label>유튜브 채널</label><input id="l_youtube" inputmode="url" placeholder="https://www.youtube.com/@채널">
-    <label>블로그</label><input id="l_blog" inputmode="url" placeholder="https://blog.naver.com/아이디">
-    <label>예약신청서 링크</label><input id="l_book" inputmode="url" placeholder="https://my.runiq.kr/request.html?g=…">
-    <p class="hint">예약신청서 링크는 예약 앱 설정 &gt; 예약신청에서 "🔗 복사"한 주소예요. 비우면 해당 버튼은 숨겨져요.</p>
+  <div class="pv"><span style="color:var(--mut)">미리보기</span><a href="/" target="_blank" rel="noopener">홈</a><a href="/work" target="_blank" rel="noopener">작업</a><a href="/price" target="_blank" rel="noopener">상품·가격</a><a href="/faq" target="_blank" rel="noopener">FAQ</a></div>
+  <div class="tabs" role="tablist">
+    <button type="button" class="on" data-tab="text">문구</button>
+    <button type="button" data-tab="media">링크·영상</button>
+    <button type="button" data-tab="price">금액</button>
+    <button type="button" data-tab="set">설정</button>
   </div>
-  <div class="c"><h2>영상 (유튜브)</h2>
-    <label>대문(첫 화면) 배경 영상(유튜브) — 지금은 사이트에 올린 영상 파일이 우선이라 대문에는 쓰이지 않아요</label><input id="heroYt" inputmode="url" placeholder="유튜브 영상 링크">
-    <label>상품·가격 페이지 배경 영상 (인터뷰 영상)</label><input id="priceYt" inputmode="url" placeholder="유튜브 영상 링크">
-    <label>작업 영상 (한 줄에 하나씩)</label><textarea id="work" placeholder="https://youtu.be/…&#10;https://www.youtube.com/watch?v=…"></textarea>
-    <p class="hint" id="workHint"></p>
-    <p class="hint">영상은 "공개" 또는 "일부 공개"이고 퍼가기가 허용되어 있어야 재생돼요. 포트폴리오 동의를 받은 영상만 올려 주세요.</p>
-  </div>
-  <div id="gen"></div>
-  <div class="c"><h2>금액 (원)</h2>
-    <div class="row2"><div><label>상품가</label><input id="p_total" inputmode="numeric"></div><div><label>계약금</label><input id="p_deposit" inputmode="numeric"></div></div>
-    <div class="row2"><div><label>포트폴리오 할인</label><input id="p_portfolio" inputmode="numeric"></div><div><label>전액결제 할인</label><input id="p_full" inputmode="numeric"></div></div>
-    <p class="hint">예약 앱의 금액 설정과 같게 맞춰 주세요. 문구에 <b>{total} {deposit} {portfolio} {full}</b> 을 쓰면 위 금액으로 자동으로 바뀌어요. 예) 계약금 {deposit} → 계약금 300,000원</p>
-  </div>
-  <div class="c"><button class="line" id="reset" type="button">모든 문구를 기본 문구로 되돌리기</button><p class="hint">누르면 화면의 문구만 기본값으로 바뀌고, "저장"을 눌러야 적용돼요.</p></div>
-  <div class="msg" id="m2"></div>
-  <a class="v" href="/" target="_blank" rel="noopener">홈페이지 열어 보기 ›</a>
-</div></div>
 
-<div class="bar hide" id="bar"><div class="in"><button id="save">저장</button></div></div>
+  <div class="tab on" id="t_text"><div id="gen"></div></div>
 
-<script src="site.js?v=4"></script>
+  <div class="tab" id="t_media">
+    <div class="c"><h2>링크</h2>
+      <label>카카오톡 채널 채팅 주소</label><input id="l_kakao" inputmode="url" placeholder="https://pf.kakao.com/_xxxxx/chat">
+      <label>인스타그램</label><input id="l_instagram" inputmode="url" placeholder="https://www.instagram.com/아이디">
+      <label>유튜브 채널</label><input id="l_youtube" inputmode="url" placeholder="https://www.youtube.com/@채널">
+      <label>블로그</label><input id="l_blog" inputmode="url" placeholder="https://blog.naver.com/아이디">
+      <label>예약신청서 링크</label><input id="l_book" inputmode="url" placeholder="https://my.runiq.kr/request.html?g=…">
+      <p class="hint">예약신청서 링크는 예약 앱 설정 &gt; 예약신청에서 "🔗 복사"한 주소예요. 비우면 해당 버튼은 숨겨져요.</p>
+    </div>
+    <div class="c"><h2>작업 영상 (유튜브)</h2>
+      <textarea id="work" placeholder="https://youtu.be/…&#10;https://www.youtube.com/watch?v=…"></textarea>
+      <p class="hint">한 줄에 하나씩 넣어요.</p>
+      <p class="hint" id="workHint"></p>
+      <p class="hint">영상은 "공개" 또는 "일부 공개"이고 퍼가기가 허용되어 있어야 재생돼요. 포트폴리오 동의를 받은 영상만 올려 주세요.</p>
+    </div>
+    <details class="c"><summary>배경 영상 (유튜브) — 보통은 쓰지 않아요</summary>
+      <p class="hint" style="margin:0 0 6px">대문과 상품·가격 제목 칸에는 사이트에 올려 둔 영상 파일이 나와요. 아래에 유튜브 링크를 넣으면 상품·가격 칸만 유튜브가 우선돼요. 대문은 영상 파일이 우선이라 아래 대문 칸은 쓰이지 않아요.</p>
+      <label>상품·가격 제목 칸 배경 영상</label><input id="priceYt" inputmode="url" placeholder="유튜브 영상 링크">
+      <label>대문 배경 영상 (쓰이지 않음)</label><input id="heroYt" inputmode="url" placeholder="유튜브 영상 링크">
+    </details>
+  </div>
+
+  <div class="tab" id="t_price">
+    <div class="c"><h2>금액 (원)</h2>
+      <div class="row2"><div><label>상품가</label><input id="p_total" inputmode="numeric"></div><div><label>계약금</label><input id="p_deposit" inputmode="numeric"></div></div>
+      <div class="row2"><div><label>포트폴리오 할인</label><input id="p_portfolio" inputmode="numeric"></div><div><label>전액결제 할인</label><input id="p_full" inputmode="numeric"></div></div>
+      <p class="hint">예약 앱의 금액 설정과 같게 맞춰 주세요. 문구에 <b>{total} {deposit} {portfolio} {full}</b> 을 쓰면 위 금액으로 자동으로 바뀌어요. 예) 계약금 {deposit} → 계약금 200,000원</p>
+    </div>
+  </div>
+
+  <div class="tab" id="t_set">
+    <div class="c"><h2>기본값 파일 만들기</h2>
+      <p class="hint" style="margin:0 0 8px">지금 저장된 문구·금액·링크를 <b>site.js</b> 파일로 만들어요. 이 파일을 GitHub의 site.js에 올려 두면, 사이트를 처음 열 때도 저장하신 문구가 처음부터 그대로 보여요. 문구를 크게 바꾼 뒤에 한 번씩 만들어 올려 주세요. (안 올려도 사이트는 평소처럼 동작해요)</p>
+      <button type="button" id="mkdef">기본값 파일 만들기</button>
+      <div class="msg" id="defmsg"></div>
+      <div id="defbox" class="hide">
+        <div class="hint" id="defsum" style="margin:0 0 8px;color:var(--tx)"></div>
+        <textarea id="deftxt" class="code" readonly spellcheck="false"></textarea>
+        <div class="row2 gap"><button type="button" id="defdl">파일로 내려받기</button><button type="button" class="line" id="defcp">복사</button></div>
+        <p class="hint">내려받은 <b>site.js</b>를 GitHub의 runiq-site 저장소에서 같은 이름의 파일에 덮어써서 올리면 끝이에요. 올리기 전에 위 요약이 맞는지 한 번 봐 주세요.</p>
+      </div>
+    </div>
+    <div class="c"><h2>문구 되돌리기</h2>
+      <button class="line" id="reset" type="button">모든 문구를 사이트 기본 문구로 되돌리기</button>
+      <p class="hint">누르면 화면의 문구만 기본값으로 바뀌고, "저장"을 눌러야 적용돼요.</p>
+    </div>
+    <div class="c"><h2>이 기기에서 나가기</h2>
+      <button class="line" id="logout" type="button">이 기기에서 비밀키 지우기</button>
+      <p class="hint">폰을 잃어버렸거나 다른 사람이 쓸 수 있을 때 눌러 주세요. 지우면 다음에 열 때 비밀키를 다시 입력해야 해요.</p>
+    </div>
+  </div>
+</div>
+
+</div>
+<div class="bar hide" id="bar"><div class="in"><div class="stw"><div class="msg" id="m2"></div><div class="dirty hide" id="dirty">저장하지 않은 변경이 있어요</div></div><button id="save">저장</button></div></div>
+
+<script src="site.js?v=10"></script>
 <script>
 (function(){
 var $=function(i){return document.getElementById(i);};
@@ -113,6 +169,17 @@ var SPEC=[
  ['작업 · 하단',[['workNote','작업 페이지 아래 문구','i',100],['footInfo','하단 상호·사업자 정보 (줄바꿈은 엔터)','t',150],['footText','하단 맨 아래 문구','i',60]]]
 ];
 var DS=window.SITE||{};
+var loading=false,dirty=false;
+function setDirty(v){dirty=v;$('dirty').classList.toggle('hide',!v);}
+function markDirty(){if(loading)return;if(!dirty){setDirty(true);say('m2','');}}
+function showTab(n){
+  [].forEach.call(document.querySelectorAll('.tabs button'),function(b){b.classList.toggle('on',b.dataset.tab===n);});
+  [].forEach.call(document.querySelectorAll('.tab'),function(p){p.classList.toggle('on',p.id==='t_'+n);});
+}
+[].forEach.call(document.querySelectorAll('.tabs button'),function(b){b.addEventListener('click',function(){showTab(b.dataset.tab);window.scrollTo(0,0);});});
+$('form').addEventListener('input',markDirty);
+$('form').addEventListener('click',function(e){var t=e.target;if(t&&t.closest&&t.closest('.tools button,button.add'))markDirty();});
+window.addEventListener('beforeunload',function(e){if(dirty){e.preventDefault();e.returnValue='';}});
 function say(id,t,ok){var e=$(id);e.textContent=t||'';e.className='msg '+(ok?'ok':'er');}
 function ytId(v){
   v=String(v||'').trim();if(!v)return '';
@@ -144,7 +211,7 @@ function itemBox(def,vals,listBox){
 function build(){
   var g=$('gen');g.innerHTML='';
   SPEC.forEach(function(sec){
-    var c=document.createElement('div');c.className='c';var h=document.createElement('h2');h.textContent=sec[0];c.appendChild(h);
+    var c=document.createElement('details');c.className='c';if(g.children.length===0)c.open=true;var h=document.createElement('summary');h.textContent=sec[0];c.appendChild(h);
     sec[1].forEach(function(f){
       if(f[2]==='list'){
         var h3=document.createElement('h3');h3.textContent=f[1];c.appendChild(h3);
@@ -177,6 +244,7 @@ function post(o){
   return fetch(API,{method:'POST',body:JSON.stringify(o)}).then(function(r){return r.text();}).then(function(t){try{return JSON.parse(t);}catch(e){return null;}});
 }
 function fill(c){
+  loading=true;
   c=c||{};var L=c.links||{},P=c.price||{};
   ['kakao','instagram','youtube','blog','book'].forEach(function(k){$('l_'+k).value=L[k]||'';});
   $('heroYt').value=c.heroYt?'https://youtu.be/'+c.heroYt:'';
@@ -187,8 +255,9 @@ function fill(c){
   var m={};SPEC.forEach(function(s){s[1].forEach(function(f){m[f[0]]=(c[f[0]]!==undefined)?c[f[0]]:DS[f[0]];});});
   setVals(m);
   $('work').dispatchEvent(new Event('input'));
+  loading=false;setDirty(false);
 }
-$('reset').addEventListener('click',function(){var m={};SPEC.forEach(function(s){s[1].forEach(function(f){m[f[0]]=DS[f[0]];});});setVals(m);say('m2','기본 문구로 바꿨어요. "저장"을 눌러야 적용돼요.',true);});
+$('reset').addEventListener('click',function(){var m={};SPEC.forEach(function(s){s[1].forEach(function(f){m[f[0]]=DS[f[0]];});});setVals(m);markDirty();say('m2','기본 문구로 바꿨어요. "저장"을 눌러야 적용돼요.',true);});
 $('load').addEventListener('click',function(){
   if(!API){var a=$('api').value.trim();if(!apiOk(a)){say('m1','서버 주소 형식이 맞지 않아요.');return;}API=a;ls(AK,a);}
   var k=$('key').value;if(!k){say('m1','비밀키를 입력해 주세요.');return;}
@@ -196,7 +265,7 @@ $('load').addEventListener('click',function(){
   post({action:'get',key:k}).then(function(r){
     $('load').disabled=false;
     if(!r||!r.ok){say('m1',errText(r));return;}
-    ls(SK,k);build();fill(r.cfg);say('m1','');$('login').classList.add('hide');$('form').classList.remove('hide');$('bar').classList.remove('hide');
+    ls(SK,k);build();fill(r.cfg);showTab('text');say('m1','');$('login').classList.add('hide');$('form').classList.remove('hide');$('bar').classList.remove('hide');
   }).catch(function(){$('load').disabled=false;say('m1',errText(null));});
 });
 function collect(){
@@ -220,6 +289,91 @@ $('save').addEventListener('click',function(){
     if(r&&r.ok){say('m2','저장했어요. 홈페이지에는 최대 10분 안에 반영돼요.',true);fill(r.cfg);}
     else say('m2',errText(r));
   }).catch(function(){$('save').disabled=false;say('m2',errText(null));});
+});
+
+/* ----- 이 기기에서 비밀키 지우기 ----- */
+$('logout').addEventListener('click',function(){
+  if(dirty&&!confirm('저장하지 않은 변경이 있어요. 그래도 비밀키를 지울까요?'))return;
+  ls(SK,null);$('key').value='';setDirty(false);
+  $('form').classList.add('hide');$('bar').classList.add('hide');$('login').classList.remove('hide');
+  say('m1','이 기기에서 비밀키를 지웠어요.',true);window.scrollTo(0,0);
+});
+
+/* ----- 현재 설정을 기본값 파일(site.js)로 만들기 ----- */
+function q(v){return JSON.stringify(String(v==null?'':v)).replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029');}
+function pad(n){return n<10?'0'+n:''+n;}
+function listTxt(list,keys){
+  if(!list||!list.length)return '[]';
+  return '[\n'+list.map(function(o){return '    {'+keys.map(function(k){return k+': '+q(o[k]);}).join(', ')+'}';}).join(',\n')+'\n  ]';
+}
+function genSite(cfg){
+  var L=cfg.links||{},P=cfg.price||{},d=new Date();
+  var stamp=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+  var out=[];
+  out.push('/* ============================================================');
+  out.push('   루닉필름 홈페이지 기본값 — 관리 페이지에서 만든 파일이에요 ('+stamp+').');
+  out.push('   평소에는 admin.html(관리 페이지)에서 고쳐요. 처음 열 때, 그리고 서버가 느리거나 안 될 때 이 값이 보여요.');
+  out.push('   문구 안의 {total} {deposit} {portfolio} {full} 은 아래 금액으로 자동 바뀌어요.');
+  out.push('   (비워 두면 해당 부분은 자동으로 숨겨져요)');
+  out.push('   ============================================================ */');
+  out.push('window.SITE = {');
+  out.push('  /* 홈페이지 설정 서버 주소 (관리 페이지에서 고친 값을 읽어 와요) */');
+  out.push('  api: '+q(API)+',');
+  out.push('');
+  out.push('  /* 링크 (비우면 해당 버튼 숨김) */');
+  ['kakao','instagram','youtube','blog','book'].forEach(function(k){out.push('  '+k+': '+q(L[k])+',');});
+  out.push('');
+  out.push('  /* 영상 (유튜브 ID) */');
+  out.push('  heroYt: '+q(cfg.heroYt)+',');
+  out.push('  priceYt: '+q(cfg.priceYt)+',');
+  var wk=(cfg.work||[]).map(function(i){return '{yt: '+q(i)+'}';});
+  (DS.work||[]).forEach(function(w){if(w&&w.img)wk.push('{img: '+q(w.img)+'}');});
+  out.push('  work: ['+(wk.length?'\n    '+wk.join(',\n    ')+'\n  ':'')+'],');
+  out.push('  reviews: '+JSON.stringify(DS.reviews||[])+',');
+  out.push('  heroVideo: '+q(DS.heroVideo)+', heroPoster: '+q(DS.heroPoster)+',');
+  out.push('  priceVideo: '+q(DS.priceVideo)+',');
+  out.push('');
+  out.push('  /* 대표 사진 (assets/owner.jpg 파일을 바꿔 올리면 교체돼요) */');
+  out.push('  aboutPhoto: '+q(DS.aboutPhoto||'assets/owner.jpg')+',');
+  out.push('');
+  out.push('  /* ---- 문구 ---- */');
+  var done={api:1,kakao:1,instagram:1,youtube:1,blog:1,book:1,heroYt:1,priceYt:1,work:1,reviews:1,heroVideo:1,heroPoster:1,priceVideo:1,aboutPhoto:1,price:1};
+  SPEC.forEach(function(sec){
+    sec[1].forEach(function(f){
+      done[f[0]]=1;
+      if(f[2]==='list')out.push('  '+f[0]+': '+listTxt(cfg[f[0]],f[3].map(function(x){return x[0];}))+',');
+      else out.push('  '+f[0]+': '+q(cfg[f[0]])+',');
+    });
+    out.push('');
+  });
+  Object.keys(DS).forEach(function(k){if(!done[k]){out.push('  '+k+': '+JSON.stringify(DS[k])+',');}});
+  out.push('  /* 금액 (원) */');
+  out.push('  price: { total: '+(P.total||0)+', deposit: '+(P.deposit||0)+', portfolio: '+(P.portfolio||0)+', full: '+(P.full||0)+' }');
+  out.push('};');
+  return out.join('\n')+'\n';
+}
+function defSummary(cfg){
+  var P=cfg.price||{},L=cfg.links||{};
+  var links=['kakao','instagram','youtube','blog','book'].filter(function(k){return L[k];}).length;
+  return '상품가 '+won(P.total)+'원 · 계약금 '+won(P.deposit)+'원 · 포트폴리오 할인 '+won(P.portfolio)+'원 · 전액결제 할인 '+won(P.full)+'원\n'
+    +'링크 '+links+'개 · 작업 영상 '+(cfg.work||[]).length+'개 · FAQ '+(cfg.faq||[]).length+'개 · 상품 내용 '+(cfg.items||[]).length+'줄 · 할인·추가 비용 '+(cfg.extras||[]).length+'줄\n'
+    +'대문 제목: '+String(cfg.heroTitle||'').replace(/\n/g,' / ');
+}
+$('mkdef').addEventListener('click',function(){
+  var c=collect();if(c.err){say('defmsg',c.err);return;}
+  var txt=genSite(c.cfg);
+  $('deftxt').value=txt;$('defsum').textContent=defSummary(c.cfg);$('defbox').classList.remove('hide');
+  say('defmsg',dirty?'⚠️ 저장하지 않은 변경이 있어요. 지금 화면의 내용으로 만들었어요. 저장한 뒤 다시 만드시는 걸 권해요.':'만들었어요. 아래 요약을 확인해 주세요.',!dirty);
+});
+$('defdl').addEventListener('click',function(){
+  var t=$('deftxt').value;if(!t)return;
+  try{var b=new Blob([t],{type:'text/javascript;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='site.js';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},4000);say('defmsg','site.js 파일을 내려받았어요.',true);}
+  catch(e){say('defmsg','내려받지 못했어요. "복사"를 눌러 붙여넣어 주세요.');}
+});
+$('defcp').addEventListener('click',function(){
+  var t=$('deftxt').value;if(!t)return;
+  function fb(){try{$('deftxt').removeAttribute('readonly');$('deftxt').select();var ok=document.execCommand('copy');$('deftxt').setAttribute('readonly','');say('defmsg',ok?'복사했어요.':'복사하지 못했어요. 글을 길게 눌러 직접 복사해 주세요.',ok);}catch(e){say('defmsg','복사하지 못했어요.');}}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){say('defmsg','복사했어요.',true);},fb);else fb();
 });
 })();
 if('serviceWorker' in navigator){window.addEventListener('load',function(){try{navigator.serviceWorker.register('admin-sw.js',{scope:'/admin.html'}).catch(function(){});}catch(e){}});}
